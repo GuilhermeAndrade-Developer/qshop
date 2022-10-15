@@ -48,6 +48,12 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            if (auth()->user()->is_admin == 1) {
+                return redirect()->route('admin.index');
+            }else{
+                return redirect()->route('user.index');
+            }
+
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
